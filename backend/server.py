@@ -3,6 +3,8 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson import ObjectId
+from google.oauth2 import id_token
+from google.auth.transport import requests
 from datetime import datetime, timedelta, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -31,6 +33,57 @@ def before_request():
 @app.route("/")
 def hello():
     return jsonify({"data": "hello"})
+
+@app.route('/google-login', methods=['POST'])
+def google_login():
+    try:
+        data = request.get_json()
+        token = data.get('token')
+        if not token:
+            return jsonify({'error': True, 'message': 'Token is required'}), 400
+
+        id_info = id_token.verify_oauth2_token(token, requests.Request(), os.getenv('GOOGLE_CLIENT_ID'))
+
+        if 'email' not in id_info:
+            return jsonify({'error': True, 'message': 'Google token is invalid'}), 400
+
+        email = id_info['email']
+        fullName = id_info.get('name', '')
+
+        user = users_collection.find_one({'email': email})
+        if not user:
+            # Register the user
+            new_user = {
+                'fullName': fullName,
+                'email': email,
+                'password': None,  # No password since it's a Google account
+                'created_on': datetime.now(timezone.utc)
+            }
+            result = users_collection.insert_one(new_user)
+            user_id = str(result.inserted_id)
+        else:
+            user_id = str(user['_id'])
+
+        access_token_secret = os.getenv("SECRET_KEY")
+        access_token = jwt.encode({
+            'user': {
+                'id': user_id,
+                'fullName': fullName,
+                'email': email
+            },
+            'exp': datetime.utcnow() + timedelta(minutes=30)
+        }, access_token_secret, algorithm='HS256')
+
+        return jsonify({
+            'error': False,
+            'accessToken': access_token
+        }), 200
+
+    except ValueError as ve:
+        return jsonify({'error': True, 'message': 'Invalid token'}), 400
+    except Exception as e:
+        return jsonify({'error': True, 'message': str(e)}), 500
+
 
 @app.route('/register', methods=['POST'])
 def register():

@@ -5,6 +5,7 @@ import Login from './Pages/Login/Login';
 import LandingPage from './Pages/LandingPage/LandingPage';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import Home from './Pages/Home/Home'
+
 const App = () => {
   return (
     <Router>

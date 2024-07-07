@@ -11,7 +11,7 @@ const LandingPage = () => {
           <a href="/login" className="bg-[#E9CFBE] text-white py-2 px-4 rounded-lg shadow-lg hover:bg-gray-600 transition duration-300 ease-in-out mx-2">
             Login
           </a>
-          <a href="/signUp" className="bg-white text-black border border-[#E9CFBE] py-2 px-4 rounded-lg shadow-lg hover:bg-[#E9CFBE] hover:text-white transition duration-300 ease-in-out mx-2">
+          <a href="/signUp" className="bg-darkBlue text-white border border-darkBlue py-2 px-4 rounded-lg shadow-lg hover:bg-[#E9CFBE] hover:text-white transition duration-300 ease-in-out mx-2">
             Signup
           </a>
         </div>
@@ -50,17 +50,17 @@ const LandingPage = () => {
           <h2 className="text-3xl font-bold mb-6 text-black">Features</h2>
           <div className="flex flex-wrap justify-center">
             <div className="w-full md:w-1/3 p-4">
-              <FaCheckCircle className="text-4xl text-[#E9CFBE] mb-4 mx-auto" />
+              <FaCheckCircle className="text-4xl text-darkBlue mb-4 mx-auto" />
               <h3 className="text-xl font-semibold mb-2">Easy to Use</h3>
               <p>Simple and intuitive interface to manage your tasks effortlessly.</p>
             </div>
             <div className="w-full md:w-1/3 p-4">
-              <FaCheckCircle className="text-4xl text-[#E9CFBE] mb-4 mx-auto" />
+              <FaCheckCircle className="text-4xl text-darkBlue mb-4 mx-auto" />
               <h3 className="text-xl font-semibold mb-2">Collaborative</h3>
               <p>Work together with your team and keep everyone on the same page.</p>
             </div>
             <div className="w-full md:w-1/3 p-4">
-              <FaCheckCircle className="text-4xl text-[#E9CFBE] mb-4 mx-auto" />
+              <FaCheckCircle className="text-4xl text-darkBlue mb-4 mx-auto" />
               <h3 className="text-xl font-semibold mb-2">Customizable</h3>
               <p>Personalize your task manager to fit your workflow and preferences.</p>
             </div>
@@ -68,7 +68,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <footer className="bg-[#E9CFBE] w-full py-6 text-center">
+      <footer className="bg-darkBlue w-full py-6 text-center">
         <p className="text-white">© 2024 TaskMaster. All rights reserved.</p>
       </footer>
     </div>

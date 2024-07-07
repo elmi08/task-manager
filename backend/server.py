@@ -84,7 +84,6 @@ def google_login():
     except Exception as e:
         return jsonify({'error': True, 'message': str(e)}), 500
 
-
 @app.route('/register', methods=['POST'])
 def register():
     try:
@@ -182,6 +181,32 @@ def login():
     except Exception as e:
         return jsonify({'error': True, 'message': str(e)}), 500
 
+@app.route('/get-user', methods=['GET'])
+def get_user():
+    try:
+        decoded_token, user_id = authenticate_token(request)
+        if not user_id:
+            return jsonify({'error': True, 'message': 'User ID not found in token'}), 401
+
+        user_id = decoded_token.get('user', {}).get('id')
+        if not user_id:
+            return jsonify({'error': True, 'message': 'User ID not found in token'}), 400
+
+        user = users_collection.find_one({'_id': ObjectId(user_id)})
+        if not user:
+            return jsonify({'error': True, 'message': 'User not found'}), 404
+
+        user_data = {
+            'id': str(user['_id']),
+            'fullName': user.get('fullName'),
+            'email': user.get('email'),
+        }
+
+        return jsonify({'error': False, 'user': user_data}), 200
+
+    except Exception as e:
+        return jsonify({'error': True, 'message': 'Internal server error'}), 500
+    
 @app.route('/get-tasks', methods=['GET'])
 def get_tasks():
     try:
@@ -221,8 +246,7 @@ def add_task():
             'title': title,
             'description': description,
             'due_date': due_date,
-            'userId': user_id,
-            'status': 'pending', 
+            'userId': user_id, 
             'created_on': datetime.now(timezone.utc)
         }
 
@@ -244,9 +268,8 @@ def edit_task(task_id):
         title = data.get('title')
         description = data.get('description')
         due_date = data.get('due_date')
-        status = data.get('status')
 
-        if not title and not description and not due_date and not status:
+        if not title and not description and not due_date:
             return jsonify({'error': True, 'message': 'No data provided for update'}), 400
 
         task = tasks_collection.find_one({'_id': ObjectId(task_id)})
@@ -260,8 +283,6 @@ def edit_task(task_id):
             updated_data['description'] = description
         if due_date:
             updated_data['due_date'] = due_date
-        if status:
-            updated_data['status'] = status
 
         tasks_collection.update_one({'_id': ObjectId(task_id)}, {'$set': updated_data})
         return jsonify({'error': False, 'message': 'Task updated successfully'}), 200
@@ -286,30 +307,6 @@ def delete_task(task_id):
             return jsonify({'error': False, 'message': 'Task deleted successfully'}), 200
         else:
             return jsonify({'error': True, 'message': 'Failed to delete task'}), 500
-
-    except Exception as e:
-        return jsonify({'error': True, 'message': str(e)}), 500
-
-@app.route('/update-task-status/<task_id>', methods=['PUT'])
-def update_task_status(task_id):
-    try:
-        decoded_token, user_id = g.user
-        if not user_id:
-            return jsonify({'error': True, 'message': 'User ID not found in token'}), 401
-
-        data = request.get_json()
-        status = data.get('status')
-
-        if not status:
-            return jsonify({'error': True, 'message': 'Status is required'}), 400
-
-        task = tasks_collection.find_one({'_id': ObjectId(task_id), 'userId': user_id})
-        if not task:
-            return jsonify({'error': True, 'message': 'Task not found or user does not have access'}), 404
-
-        tasks_collection.update_one({'_id': ObjectId(task_id)}, {'$set': {'status': status}})
-
-        return jsonify({'error': False, 'message': 'Task status updated successfully'}), 200
 
     except Exception as e:
         return jsonify({'error': True, 'message': str(e)}), 500

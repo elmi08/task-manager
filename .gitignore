@@ -1,0 +1,13 @@
+# Ignore files in backend directory
+backend/.env
+backend/venv/
+backend/__pycache__/
+
+# Ignore files in frontend directory
+frontend/.env
+frontend/.env.production
+frontend/node_modules/
+frontend/dist/
+
+# Ignore .vscode directory
+.vscode/

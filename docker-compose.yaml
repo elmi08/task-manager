@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: elmi08/task-manager-frontend:latest
+    ports:
+      - "3000:80"
+    environment:
+      - BACKEND_SERVER_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+  backend:
+    image: elmi08/task-manager-backend:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=TUddhIspHhh1Atg
+      - MONGO_URI=mongodb+srv://elmimoha08:Z3MO7zjDD0g4xEJq@task-mnager.vlssbzv.mongodb.net/?retryWrites=true&w=majority&appName=Task-Mnager

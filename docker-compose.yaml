@@ -16,4 +16,4 @@ services:
       - "8000:8000"
     environment:
       - SECRET_KEY=TUddhIspHhh1Atg
-      - MONGO_URI=mongodb+srv://elmimoha08:Z3MO7zjDD0g4xEJq@task-mnager.vlssbzv.mongodb.net/?retryWrites=true&w=majority&appName=Task-Mnager
+      - MONGO_URI=mongodb+srv://elmimoha08:Z3MO7zjDD0g4xEJq@task-mnager.vlssbzv.mongodb.net/?retryWrites=true&w=majority&appName=Task-Manager
